@@ -19,7 +19,7 @@ cli = Cli(description='Youtube to Podcast Generator')
 def main(
     channel_id: str = Option(..., help='Channel ID'),
     template: Path = Option(..., help="feed template"),
-    feed: Path = Option(Path("feed.xml"), "-f", "--feed", help="output feed"),
+    feed: Path = Option(Path("feed.xml"), "-f", "--feed", help="output feed", raise_path_does_not_exist=False),
     media_dir: Path = Option(Path('media'), "-m", "--media", help="media output directory"),
     limit: str = Option(50, "-l", "--limit", help='Entry limit'),
     redownload: bool = Option(False, "-r", "--redownload", help='Re-Download All Files'),
