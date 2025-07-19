@@ -59,7 +59,6 @@ def main(
         response = httpx.get(thumb_url)
         fh.write(response.content)
 
-      entry['media_size'] = media_path.stat().st_size
       opts = {
         'extract_audio': True,
         'format': 'bestaudio',
@@ -75,6 +74,8 @@ def main(
           .run()
         )
         tmp_path.unlink()
+
+      entry['media_size'] = media_path.stat().st_size
 
   else:
     print("Failed to get RSS feed. Status code:", feed.status)
