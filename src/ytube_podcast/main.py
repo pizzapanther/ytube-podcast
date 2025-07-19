@@ -45,13 +45,13 @@ def main(
       media_path = media_dir / (slugify(entry.title) + '.mp3')
       thumb_path = media_dir / (slugify(entry.title) + '.' + thumb_url.split('.')[-1])
       entry['media_path'] = media_path
-      entry['media_size'] = media_path.stat().st_size
       entry['thumb_path'] = thumb_path
       entry['published'] = pendulum.parse(entry.published).to_rss_string()
       context['entries'].append(entry)
       if media_path.exists():
         if not redownload:
           print('Skipping Download:', entry.title)
+          entry['media_size'] = media_path.stat().st_size
           continue
 
       print('Downloading:', entry.title)
@@ -59,6 +59,7 @@ def main(
         response = httpx.get(thumb_url)
         fh.write(response.content)
 
+      entry['media_size'] = media_path.stat().st_size
       opts = {
         'extract_audio': True,
         'format': 'bestaudio',
