@@ -2,12 +2,14 @@
 
 Create audio podcasts from Youtube Channels and Rumble Channels.
 
-Podtube CLI automatically takes your video feed and:
+Podtube CLI automatically:
 
-- downloads the video
+- downloads the video from your feed
 - extracts the audio to mp3 files
 - downloads thumbnail images
 - generates an XML RSS feed
+
+**Note:** Rumble uses OpenRSS.org to create a feed of your Rumble Channel. So visit `https://openrss.org/rumble.com/c/<channel-id>` before trying to generate your feed. Make sure content is showing up.
 
 ## Install
 
