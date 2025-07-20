@@ -1,5 +1,6 @@
 import datetime
 import pendulum
+import socket
 import sys
 from pathlib import Path
 
@@ -9,11 +10,14 @@ import httpx
 import yt_dlp
 
 from bs4 import BeautifulSoup
+from dateutil import parser
 from liquid import parse
 from piou import Cli, Option
 from slugify import slugify
 
 cli = Cli(description='Youtube to Podcast Generator')
+
+feedparser.USER_AGENT = f"Podtube CLI/1.0 ({socket.gethostname()})"
 
 
 @cli.main()
@@ -60,7 +64,10 @@ def main(
       thumb_path = media_dir / (slugify(entry.title) + '.' + thumb_url.split('.')[-1])
       entry['media_path'] = media_path
       entry['thumb_path'] = thumb_path
-      entry['published'] = pendulum.parse(entry.published).to_rss_string()
+
+      dt = parser.parse(entry["published"])
+      entry['published'] = pendulum.instance(dt).to_rss_string()
+
       context['entries'].append(entry)
       if media_path.exists():
         if not redownload:
