@@ -1,5 +1,14 @@
 # Youtube Podcast Generator
 
+Create audio podcasts from Youtube Channels and Rumble Channels.
+
+Podtube CLI automatically takes your video feed and:
+
+- downloads the video
+- extracts the audio to mp3 files
+- downloads thumbnail images
+- generates an XML RSS feed
+
 ## Install
 
 `pipx install ytube-podcast`
