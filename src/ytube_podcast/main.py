@@ -8,6 +8,7 @@ import ffmpeg
 import httpx
 import yt_dlp
 
+from bs4 import BeautifulSoup
 from liquid import parse
 from piou import Cli, Option
 from slugify import slugify
@@ -19,6 +20,7 @@ cli = Cli(description='Youtube to Podcast Generator')
 def main(
     channel_id: str = Option(..., help='Channel ID'),
     template: Path = Option(..., help="feed template"),
+    channel_type: str = Option("youtube", "-t", "--type", help='Channel Type'),
     feed: Path = Option(Path("feed.xml"), "-f", "--feed", help="output feed", raise_path_does_not_exist=False),
     media_dir: Path = Option(Path('media'), "-m", "--media", help="media output directory"),
     limit: str = Option(50, "-l", "--limit", help='Entry limit'),
@@ -35,13 +37,25 @@ def main(
     'utcnow': pendulum.now('UTC').to_rss_string(),
     'entries': []
   }
-  xmlfeed = feedparser.parse(f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}")
+
+  xmlurl = f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
+  if channel_type == 'rumble':
+    xmlurl = f'https://openrss.org/rumble.com/c/{channel_id}'
+
+  xmlfeed = feedparser.parse(xmlurl)
   if xmlfeed.status == 200:
     for i, entry in enumerate(xmlfeed.entries):
       if i == (limit - 1):
         break
 
-      thumb_url = entry.media_thumbnail[0]['url']
+      if channel_type == 'rumble':
+        soup = BeautifulSoup(entry.summary, 'html.parser')
+        img = soup.find_all('img')[0]
+        thumb_url = img['src']
+
+      else:
+        thumb_url = entry.media_thumbnail[0]['url']
+
       media_path = media_dir / (slugify(entry.title) + '.mp3')
       thumb_path = media_dir / (slugify(entry.title) + '.' + thumb_url.split('.')[-1])
       entry['media_path'] = media_path
@@ -78,7 +92,7 @@ def main(
       entry['media_size'] = media_path.stat().st_size
 
   else:
-    print("Failed to get RSS feed. Status code:", feed.status)
+    print("Failed to get RSS feed. Status code:", xmlfeed.status)
     sys.exit(1)
 
   template = parse(tpl_text)

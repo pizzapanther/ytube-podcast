@@ -14,6 +14,7 @@ dependencies = [
     "python-liquid>=2.0.2",
     "httpx>=0.28.1",
     "pendulum>=3.1.0",
+    "beautifulsoup4>=4.13.4",
 ]
 requires-python = ">=3.13"
 readme = "README.md"
