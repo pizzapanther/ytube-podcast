@@ -50,6 +50,6 @@ podtube my-channel-id static/tpl.xml -t rumble -f static/rss.xml -m static/podca
 
 ## Feed Templates
 
-See [example-rss.xml](example-rss.xml) for a full XML example.
+See [example-rss.xml](example-rss.xml) for a full rendered XML example.
 
 [Liquid Templates](https://jg-rp.github.io/liquid/) are used to generate your feed. See [example-tpl.xml](example-tpl.xml) for an example template.
