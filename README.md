@@ -1,4 +1,4 @@
-# Youtube Podcast Generator
+# Youtube/Rumble Podcast Generator
 
 Create audio podcasts from Youtube Channels and Rumble Channels.
 
