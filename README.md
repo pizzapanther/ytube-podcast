@@ -47,3 +47,9 @@ podtube adbcd123-N3SHwntLU2xfkaA static/tpl.xml -f static/rss.xml -m static/podc
 ```
 podtube my-channel-id static/tpl.xml -t rumble -f static/rss.xml -m static/podcast/
 ```
+
+## Feed Templates
+
+See [example-rss.xml](example-rss.xml) for a full XML example.
+
+[Liquid Templates](https://jg-rp.github.io/liquid/) are used to generate your feed. See [example-tpl.xml](example-tpl.xml) for an example template.
