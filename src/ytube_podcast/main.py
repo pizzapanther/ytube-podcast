@@ -15,6 +15,8 @@ from liquid import parse
 from piou import Cli, Option
 from slugify import slugify
 
+from ytube_podcast.rumble import generate_feed
+
 cli = Cli(description='Youtube to Podcast Generator')
 
 feedparser.USER_AGENT = f"Podtube CLI/1.0 ({socket.gethostname()})"
@@ -42,65 +44,63 @@ def main(
     'entries': []
   }
 
-  xmlurl = f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
   if channel_type == 'rumble':
-    xmlurl = f'https://openrss.org/rumble.com/c/{channel_id}'
-
-  xmlfeed = feedparser.parse(xmlurl)
-  if xmlfeed.status == 200:
-    for i, entry in enumerate(xmlfeed.entries):
-      if i == (limit - 1):
-        break
-
-      if channel_type == 'rumble':
-        soup = BeautifulSoup(entry.summary, 'html.parser')
-        img = soup.find_all('img')[0]
-        thumb_url = img['src']
-
-      else:
-        thumb_url = entry.media_thumbnail[0]['url']
-
-      media_path = media_dir / (slugify(entry.title) + '.mp3')
-      thumb_path = media_dir / (slugify(entry.title) + '.' + thumb_url.split('.')[-1])
-      entry['media_path'] = media_path
-      entry['thumb_path'] = thumb_path
-
-      dt = parser.parse(entry["published"])
-      entry['published'] = pendulum.instance(dt).to_rss_string()
-
-      context['entries'].append(entry)
-      if media_path.exists():
-        if not redownload:
-          print('Skipping Download:', entry.title)
-          entry['media_size'] = media_path.stat().st_size
-          continue
-
-      print('Downloading:', entry.title)
-      with thumb_path.open('wb') as fh:
-        response = httpx.get(thumb_url)
-        fh.write(response.content)
-
-      opts = {
-        'extract_audio': True,
-        'format': 'bestaudio',
-        'outtmpl': 'output.%(ext)s'
-      }
-      with yt_dlp.YoutubeDL(opts) as video:
-        info_dict = video.extract_info(entry.link, download=True)
-        tmp_path = Path(f'output.{info_dict['audio_ext']}')
-        (
-          ffmpeg
-          .input(str(tmp_path))
-          .output(str(media_path))
-          .run()
-        )
-        tmp_path.unlink()
-
-      entry['media_size'] = media_path.stat().st_size
+    xmlfeed = generate_feed(channel_id)
 
   else:
-    print("Failed to get RSS feed. Status code:", xmlfeed.status)
-    sys.exit(1)
+    xmlurl = f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
+    xmlfeed = feedparser.parse(xmlurl)
+    if xmlfeed.status != 200:
+      print("Failed to get RSS feed. Status code:", xmlfeed.status)
+      sys.exit(1)
+
+  for i, entry in enumerate(xmlfeed.entries):
+    if i == (limit - 1):
+      break
+
+    if channel_type == 'rumble':
+      thumb_url = entry.thumb_url
+
+    else:
+      thumb_url = entry.media_thumbnail[0]['url']
+
+    media_path = media_dir / (slugify(entry.title) + '.mp3')
+    thumb_path = media_dir / (slugify(entry.title) + '.' + thumb_url.split('.')[-1])
+    entry['media_path'] = media_path
+    entry['thumb_path'] = thumb_path
+
+    dt = parser.parse(entry["published"])
+    entry['published'] = pendulum.instance(dt).to_rss_string()
+
+    context['entries'].append(entry)
+    if media_path.exists():
+      if not redownload:
+        print('Skipping Download:', entry.title)
+        entry['media_size'] = media_path.stat().st_size
+        continue
+
+    print('Downloading:', entry.title)
+    with thumb_path.open('wb') as fh:
+      response = httpx.get(thumb_url)
+      fh.write(response.content)
+
+    opts = {
+      'extract_audio': True,
+      'format': 'bestaudio',
+      'outtmpl': 'output.%(ext)s'
+    }
+    with yt_dlp.YoutubeDL(opts) as video:
+      info_dict = video.extract_info(entry.link, download=True)
+      tmp_path = Path(f'output.{info_dict['audio_ext']}')
+      (
+        ffmpeg
+        .input(str(tmp_path))
+        .output(str(media_path))
+        .run()
+      )
+      tmp_path.unlink()
+
+    entry['media_size'] = media_path.stat().st_size
 
   template = parse(tpl_text)
   output = template.render(**context)
