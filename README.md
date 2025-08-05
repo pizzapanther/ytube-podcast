@@ -13,6 +13,8 @@ Podtube CLI automatically:
 
 ## Install
 
+**Requires ffmpeg to be installed**
+
 `pipx install ytube-podcast`
 
 
