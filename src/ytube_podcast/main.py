@@ -86,7 +86,6 @@ def main(
 
     opts = {
       'extract_audio': True,
-      'format': 'bestaudio',
       'outtmpl': 'output.%(ext)s'
     }
     with yt_dlp.YoutubeDL(opts) as video:
