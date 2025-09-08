@@ -85,12 +85,11 @@ def main(
       fh.write(response.content)
 
     opts = {
-      'extract_audio': True,
       'outtmpl': 'output.%(ext)s'
     }
     with yt_dlp.YoutubeDL(opts) as video:
       info_dict = video.extract_info(entry.link, download=True)
-      tmp_path = Path(f'output.{info_dict['audio_ext']}')
+      tmp_path = Path(f'output.{info_dict['ext']}')
       (
         ffmpeg
         .input(str(tmp_path))
