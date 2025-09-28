@@ -1,6 +1,6 @@
 [project]
 name = "ytube-podcast"
-version = "1.0.0"
+version = "1.0.1"
 description = "Youtube to Podcast Generator"
 authors = [
     {name = "Paul Bailey", email = "paul@neutron.studio"},
@@ -8,7 +8,7 @@ authors = [
 dependencies = [
     "piou>=0.20.0",
     "feedparser>=6.0.11",
-    "yt-dlp>=2025.6.30",
+    "yt-dlp>=2025.9.26",
     "ffmpeg-python>=0.2.0",
     "python-slugify>=8.0.4",
     "python-liquid>=2.0.2",
