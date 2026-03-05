@@ -3,12 +3,13 @@ from bs4 import BeautifulSoup as bs
 
 from feedparser import FeedParserDict
 
+TIMEOUT = 120
 HEADERS = {
-  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+  "User-Agent": "Mozilla/5.0 (iPhone; CPU OS 26_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.2 Mobile/14E304 Safari/605.1.15"
 }
 
 def generate_feed(channel):
-  response = httpx.get(f'https://rumble.com/c/{channel}', headers=HEADERS)
+  response = httpx.get(f'https://rumble.com/c/{channel}', headers=HEADERS, timeout=TIMEOUT)
   page_soup = bs(response.content, 'html.parser')
   articles = page_soup.find_all("div", class_="videostream")
   entries = []
@@ -17,7 +18,7 @@ def generate_feed(channel):
       continue
 
     link = f'https://rumble.com{article.find('a')['href']}'
-    response = httpx.get(link, headers=HEADERS)
+    response = httpx.get(link, headers=HEADERS, timeout=TIMEOUT)
     more_soup = bs(response.content, 'html.parser')
     desc = more_soup.find("p", class_="media-description")
     if desc:
