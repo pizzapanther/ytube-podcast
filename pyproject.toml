@@ -1,6 +1,6 @@
 [project]
 name = "ytube-podcast"
-version = "1.0.4"
+version = "1.0.5"
 description = "Youtube to Podcast Generator"
 authors = [
     {name = "Paul Bailey", email = "paul@neutron.studio"},
