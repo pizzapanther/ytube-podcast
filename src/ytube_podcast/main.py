@@ -8,6 +8,7 @@ import feedparser
 import ffmpeg
 import httpx
 import yt_dlp
+from yt_dlp.networking.impersonate import ImpersonateTarget
 
 from bs4 import BeautifulSoup
 from dateutil import parser
@@ -85,7 +86,8 @@ def main(
       fh.write(response.content)
 
     opts = {
-      'outtmpl': 'output.%(ext)s'
+      'outtmpl': 'output.%(ext)s',
+      'impersonate': ImpersonateTarget.from_str("firefox:macos"),
     }
     with yt_dlp.YoutubeDL(opts) as video:
       info_dict = video.extract_info(entry.link, download=True)

@@ -6,7 +6,7 @@ from feedparser import FeedParserDict
 
 TIMEOUT = 120
 HEADERS = {
-  "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"
+  "User-Agent": "Mozilla/5.0 (X11; Linux i686; rv:154.0) Gecko/20100101 Firefox/154.0"
 }
 
 def generate_feed(channel):

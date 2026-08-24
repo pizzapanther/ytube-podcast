@@ -1,6 +1,6 @@
 [project]
 name = "ytube-podcast"
-version = "1.0.6"
+version = "1.0.7"
 description = "Youtube to Podcast Generator"
 authors = [
     {name = "Paul Bailey", email = "paul@neutron.studio"},
@@ -15,7 +15,7 @@ dependencies = [
     "pendulum>=3.1.0",
     "beautifulsoup4>=4.13.4",
     "python-dateutil>=2.9.0.post0",
-    "yt-dlp[default]>=2026.3.17",
+    "yt-dlp[curl-cffi,default]>=2026.8.19",
 ]
 requires-python = ">=3.13"
 readme = "README.md"
