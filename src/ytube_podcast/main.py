@@ -87,7 +87,7 @@ def main(
 
     opts = {
       'outtmpl': 'output.%(ext)s',
-      'impersonate': ImpersonateTarget.from_str("firefox:macos"),
+      'impersonate': ImpersonateTarget.from_str("safari:macos"),
     }
     with yt_dlp.YoutubeDL(opts) as video:
       info_dict = video.extract_info(entry.link, download=True)
